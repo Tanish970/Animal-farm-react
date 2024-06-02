@@ -10,11 +10,11 @@ function App() {
   const [text,setText]=useState("")
   const search=async (q)=>{
     setText(q)
-    console.log(q)
     const responce=await fetch(
-      'https://potential-spoon-5v79jxpqgvxc45w7-8080.app.github.dev/'+new URLSearchParams({q})
+      'http://localhost:8080/?'+new URLSearchParams({ q })
     )
-    data=await responce.json();
+    const data=await responce.json();
+    console.log(data)
     setAnimals(data)
   }
   return (
@@ -28,7 +28,8 @@ function App() {
       />
      <ul>
       {animals.map((animal)=>(
-        <Animal id={animals.id} type={animals.type} name={animals.name} age={animals.age}/>
+
+        <Animal id={animal.id} type={animal.type} name={animal.name} age={animal.age}/>
       ))}
   
 </ul>
@@ -40,7 +41,7 @@ function App() {
 function Animal({ id, type, name, age }) {
   return (
     <li key={id}> 
-      <strong>{type}</strong> {name} {age}
+      <strong>{type}</strong> {name} ({age} years old)
     </li>
   );
 }
