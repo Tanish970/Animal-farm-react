@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -6,17 +6,7 @@ import './App.css'
 
 
 function App() {
-  const [animals,setAnimals]=useState([]);
-  const [text,setText]=useState("")
-  const search=async (q)=>{
-    setText(q)
-    const responce=await fetch(
-      'http://localhost:8080/?'+new URLSearchParams({ q })
-    )
-    const data=await responce.json();
-    console.log(data)
-    setAnimals(data)
-  }
+  const {search,animal}=useAnimalSearch()
   return (
     <>
       <h1>Animal Farm</h1>
@@ -45,5 +35,27 @@ function Animal({ id, type, name, age }) {
     </li>
   );
 }
+
+function useAnimalSearch(){
+  const [animals,setAnimals]=useState([]);
+  const [text,setText]=useState("")
+  useEffect(()=>{
+    const lastquery=localStorage.getItem('lastquery');
+    search(lastquery)
+
+  },[])
+  const search=async (q)=>{
+    setText(q)
+    const responce=await fetch(
+      'http://localhost:8080/?'+new URLSearchParams({ q })
+    )
+    const data=await responce.json();
+    setAnimals(data)
+    localStorage.setItem('lastquery')=q
+
+  }
+  return {search,animals}
+}
+
 
 export default App
